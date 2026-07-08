@@ -4,8 +4,15 @@ import { verifyEmailSchema } from "@/schemas/auth";
 import { VerificationTokenModel } from "@/models/verificationToken";
 import { UserModel } from "@/models/user";
 import { hashToken } from "@/utils/tokens";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
+  const ip = request.headers.get("x-forwarded-for") ?? "unknown";
+  const limiter = rateLimit(`verify-email:${ip}`, 10, 60_000);
+  if (!limiter.ok) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   const body = await request.json();
   const parsed = verifyEmailSchema.safeParse(body);
 

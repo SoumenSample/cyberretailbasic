@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { getCloudinary } from "@/lib/cloudinary";
 import { rateLimit } from "@/lib/rate-limit";
+import { validateUploadFile, sanitizeFolderName } from "@/utils/sanitize";
 
 export async function POST(request: Request) {
   const session = await auth();
@@ -18,27 +19,27 @@ export async function POST(request: Request) {
   const formData = await request.formData();
   const file = formData.get("file");
   const rawFolder = String(formData.get("folder") ?? "gstandbilling");
-  const folder = `${session.user.businessId}/${rawFolder}`;
+  const folder = `${session.user.businessId}/${sanitizeFolderName(rawFolder)}`;
 
   if (!file || !(file instanceof File)) {
     return NextResponse.json({ error: "File is required" }, { status: 400 });
   }
 
+  const validation = validateUploadFile(file);
+  if (!validation.ok) {
+    return NextResponse.json({ error: validation.error }, { status: 400 });
+  }
+
   const buffer = Buffer.from(await file.arrayBuffer());
   const base64 = buffer.toString("base64");
-  const mime = file.type || "image/png";
+  const mime = file.type;
 
   let cloudinary;
   try {
     cloudinary = getCloudinary();
-  } catch (error) {
+  } catch {
     return NextResponse.json(
-      {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Cloudinary configuration error",
-      },
+      { error: "Cloudinary not configured" },
       { status: 500 }
     );
   }
@@ -57,14 +58,8 @@ export async function POST(request: Request) {
       url: result.secure_url,
       publicId: result.public_id,
     });
-  } catch (error) {
-    return NextResponse.json(
-      {
-        error:
-          error instanceof Error ? error.message : "Upload failed",
-      },
-      { status: 500 }
-    );
+  } catch {
+    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
   }
 }
 

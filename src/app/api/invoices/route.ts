@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { connectToDatabase } from "@/lib/db";
 import { createInvoice } from "@/services/invoiceService";
+import { escapeRegex } from "@/utils/sanitize";
 import { z } from "zod";
 import { rateLimit } from "@/lib/rate-limit";
 
@@ -70,9 +71,10 @@ export async function GET(request: Request) {
   };
 
   if (search) {
+    const safeSearch = escapeRegex(search);
     filter.$or = [
-      { invoiceNumber: { $regex: search, $options: "i" } },
-      { buyerName: { $regex: search, $options: "i" } },
+      { invoiceNumber: { $regex: safeSearch, $options: "i" } },
+      { buyerName: { $regex: safeSearch, $options: "i" } },
     ];
   }
 

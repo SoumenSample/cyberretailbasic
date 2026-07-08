@@ -174,6 +174,23 @@ const authConfig: NextAuthConfig = {
           token.role = membership.role;
         }
       }
+
+      // Invalidate sessions if password was changed after token was issued
+      if (token.userId && token.iat) {
+        await connectToDatabase();
+        const userDoc = await UserModel.findById(token.userId)
+          .select("passwordChangedAt")
+          .lean();
+        if (userDoc?.passwordChangedAt) {
+          const passwordChangedTimestamp = Math.floor(
+            new Date(userDoc.passwordChangedAt).getTime() / 1000
+          );
+          if (token.iat < passwordChangedTimestamp) {
+            return null; // Invalidate this token
+          }
+        }
+      }
+
       return token;
     },
     async session({ session, token }) {

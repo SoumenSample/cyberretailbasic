@@ -11,6 +11,7 @@ const UserSchema = new Schema(
     lastLoginAt: { type: Date, default: null },
     lastLoginIp: { type: String, default: null },
     twoFactorEnabled: { type: Boolean, default: false },
+    passwordChangedAt: { type: Date, default: null },
     globalRole: {
       type: String,
       enum: ["ADMIN", "USER"],

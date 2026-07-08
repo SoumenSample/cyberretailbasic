@@ -42,8 +42,6 @@ export async function GET() {
     return NextResponse.json({ items: itemsWithDefaults });
   } catch (error) {
     console.error("Failed to fetch categories:", error);
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    console.error("Error details:", errorMessage);
     return NextResponse.json(
       { error: "Failed to fetch categories" },
       { status: 500 }
@@ -68,7 +66,6 @@ export async function POST(request: Request) {
     const parsed = categorySchema.safeParse(body);
 
     if (!parsed.success) {
-      console.error("Schema validation failed:", parsed.error.flatten());
       return NextResponse.json(
         { error: "Invalid payload", issues: parsed.error.flatten() },
         { status: 400 }

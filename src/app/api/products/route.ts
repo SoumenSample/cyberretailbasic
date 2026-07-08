@@ -6,6 +6,7 @@ import { productSchema } from "@/schemas/product";
 import { rateLimit } from "@/lib/rate-limit";
 import { addShelfInventory } from "@/services/shelfService";
 import { requireInventoryAccess } from "@/lib/access";
+import { escapeRegex } from "@/utils/sanitize";
 import { z } from "zod";
 
 const querySchema = z.object({
@@ -47,11 +48,12 @@ export async function GET(request: Request) {
   }
 
   if (search) {
+    const safeSearch = escapeRegex(search);
     filter.$or = [
-      { name: { $regex: search, $options: "i" } },
-      { sku: { $regex: search, $options: "i" } },
-      { hsn: { $regex: search, $options: "i" } },
-      { barcode: { $regex: search, $options: "i" } },
+      { name: { $regex: safeSearch, $options: "i" } },
+      { sku: { $regex: safeSearch, $options: "i" } },
+      { hsn: { $regex: safeSearch, $options: "i" } },
+      { barcode: { $regex: safeSearch, $options: "i" } },
     ];
   }
 

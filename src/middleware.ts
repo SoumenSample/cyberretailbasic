@@ -34,11 +34,28 @@ export default async function middleware(req: NextRequest) {
     cookieName,
   });
 
+  // Redirect root to login/dashboard based on auth state
+  if (pathname === "/") {
+    if (!token?.userId) {
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
+    return NextResponse.redirect(new URL("/dashboard", req.url));
+  }
+
   if (!token?.userId) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  // Block premium feature routes - redirect to upgrade page
+  // Users without businessId: ADMIN users must complete onboarding first
+  if (!token.businessId) {
+    const globalRole = (token.globalRole as string | undefined) ?? null;
+    if (globalRole === "ADMIN") {
+      return NextResponse.redirect(new URL("/onboarding", req.url));
+    }
+    return NextResponse.redirect(new URL("/dashboard", req.url));
+  }
+
+  // Block premium feature routes - redirect to upgrade page (must be after businessId check)
   const isPremiumRoute = PREMIUM_ROUTES.some((prefix) => pathname.startsWith(prefix));
   if (isPremiumRoute) {
     return NextResponse.redirect(new URL("/upgrade", req.url));
@@ -57,15 +74,6 @@ export default async function middleware(req: NextRequest) {
     pathname.startsWith("/upgrade") ||
     pathname.startsWith("/api")
   ) {
-    // Users without businessId: ADMIN users must complete onboarding first
-    if (!token.businessId) {
-      const globalRole = (token.globalRole as string | undefined) ?? null;
-      if (globalRole === "ADMIN") {
-        return NextResponse.redirect(new URL("/onboarding", req.url));
-      }
-      return NextResponse.redirect(new URL("/dashboard", req.url));
-    }
-
     const role = (token.role as string | undefined) ?? null;
     const isOwnerOrAdmin = role === "OWNER" || role === "ADMIN";
 
@@ -94,6 +102,7 @@ export default async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
+    "/",
     "/dashboard/:path*",
     "/invoices/:path*",
     "/products/:path*",
