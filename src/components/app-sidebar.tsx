@@ -118,13 +118,6 @@ export function AppSidebar({
         show: canAccess(["INVENTORY_MANAGER"]),
       },
       {
-        title: "Shelves",
-        url: "/shelves",
-        icon: <DatabaseIcon />,
-        isActive: isActivePath(pathname, "/shelves"),
-        show: canAccess(["INVENTORY_MANAGER"]),
-      },
-      {
         title: "Categories",
         url: "/categories",
         icon: <TagsIcon />,
@@ -144,13 +137,6 @@ export function AppSidebar({
         icon: <MonitorIcon />,
         isActive: isActivePath(pathname, "/pos"),
         show: canAccess(["CASHIER"]),
-      },
-      {
-        title: "Employees",
-        url: "/employees",
-        icon: <UsersIcon />,
-        isActive: isActivePath(pathname, "/employees"),
-        show: hasFullAccess,
       },
       // {
       //   title: "Reports",

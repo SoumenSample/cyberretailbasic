@@ -1,15 +1,7 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
-import { connectToDatabase } from "@/lib/db";
-import { getShelfAlerts } from "@/services/shelfService";
+
+const PREMIUM_MESSAGE = "Shelf Management is a premium feature. Contact sales to upgrade your business plan.";
 
 export async function GET() {
-  const session = await auth();
-  if (!session?.user?.businessId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  await connectToDatabase();
-  const alerts = await getShelfAlerts(session.user.businessId);
-  return NextResponse.json(alerts);
+  return NextResponse.json({ error: PREMIUM_MESSAGE, code: "PREMIUM_FEATURE" }, { status: 403 });
 }
