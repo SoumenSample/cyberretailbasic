@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "STORE MANAGEMENT SYSTEM",
-  description: "Multi-tenant Store Management System, inventory, POS, and business management platform.",
+  title: "Cyber Retail",
+  description: "Store Management System, inventory, POS, and business management platform.",
 };
 
 export default function RootLayout({

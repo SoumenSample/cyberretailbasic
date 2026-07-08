@@ -221,7 +221,6 @@ const s = StyleSheet.create({
     justifyContent: "space-between",
   },
   bannerLeft: { flexDirection: "row", alignItems: "flex-start", gap: 12 },
-  logo: { width: 48, height: 48, borderRadius: 4 },
   businessName: {
     fontSize: 14,
     fontFamily: "Roboto", fontWeight: "bold",
@@ -512,9 +511,6 @@ export function InvoicePdf({ invoice, items, business, invoiceQrDataUrl }: Invoi
         {/* ── Banner ── */}
         <View style={s.banner}>
           <View style={s.bannerLeft}>
-            {business?.logoUrl && (
-              <Image source={business.logoUrl} style={s.logo} />
-            )}
             <View>
               <Text style={s.businessName}>{business?.name ?? "Your Business"}</Text>
               <Text style={s.businessSub}>{business?.address}</Text>

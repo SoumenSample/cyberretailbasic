@@ -31,7 +31,6 @@ type BusinessSettingsFormProps = {
       ifsc?: string | null;
       branch?: string | null;
     } | null;
-    logoUrl?: string | null;
     signatureUrl?: string | null;
     upiQrUrl?: string | null;
     financialYearStartMonth?: number | null;
@@ -69,18 +68,16 @@ export default function BusinessSettingsForm({ business }: BusinessSettingsFormP
         ifsc: business.bankDetails?.ifsc ?? "",
         branch: business.bankDetails?.branch ?? "",
       },
-      logoUrl: business.logoUrl ?? "",
       signatureUrl: business.signatureUrl ?? "",
       upiQrUrl: business.upiQrUrl ?? "",
       financialYearStartMonth: business.financialYearStartMonth ?? 4,
     },
   });
 
-  const logoUrl = useWatch({ control: form.control, name: "logoUrl" });
   const signatureUrl = useWatch({ control: form.control, name: "signatureUrl" });
   const upiQrUrl = useWatch({ control: form.control, name: "upiQrUrl" });
 
-  const uploadImage = async (file: File, field: keyof Pick<BusinessForm, "logoUrl" | "signatureUrl" | "upiQrUrl">) => {
+  const uploadImage = async (file: File, field: keyof Pick<BusinessForm, "signatureUrl" | "upiQrUrl">) => {
     try {
       setUploadingField(field);
       const formData = new FormData();
@@ -270,16 +267,10 @@ export default function BusinessSettingsForm({ business }: BusinessSettingsFormP
         <section className="grid gap-4 rounded-3xl border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-6 shadow-sm">
           <div>
             <h2 className="text-lg font-semibold text-slate-900 dark:text-zinc-100">Brand assets</h2>
-            <p className="text-sm text-slate-500 dark:text-zinc-400">Upload the logo, signature, and UPI QR used in documents.</p>
+            <p className="text-sm text-slate-500 dark:text-zinc-400">Upload the signature and UPI QR used in documents.</p>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-3">
-            <AssetField
-              label="Business logo"
-              value={logoUrl}
-              uploading={uploadingField === "logoUrl"}
-              onUpload={(file) => uploadImage(file, "logoUrl")}
-            />
+          <div className="grid gap-4 md:grid-cols-2">
             <AssetField
               label="Signature image"
               value={signatureUrl}

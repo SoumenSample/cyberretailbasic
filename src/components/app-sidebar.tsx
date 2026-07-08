@@ -26,10 +26,8 @@ const isActivePath = (pathname: string, target: string) =>
 
 function SidebarHeaderContent({
   workspaceName,
-  workspaceLogoUrl,
 }: {
   workspaceName: string
-  workspaceLogoUrl?: string | null
 }) {
   const { state } = useSidebar()
 
@@ -38,20 +36,15 @@ function SidebarHeaderContent({
       <SidebarMenuItem>
         <SidebarMenuButton asChild className="h-auto p-2">
           <Link href="/dashboard" className="flex items-center gap-3">
-            {workspaceLogoUrl ? (
-              <Image
-                alt={workspaceName}
-                src={workspaceLogoUrl}
-                priority
-                loading="eager"
-                className="size-16 rounded-md object-contain"
-                width={80}
-                height={80}
-                unoptimized
-              />
-            ) : (
-              <CommandIcon className="size-16" />
-            )}
+            <Image
+              alt="Cyber Retail"
+              src="/logo.png"
+              priority
+              loading="eager"
+              className="size-16 rounded-md object-contain"
+              width={80}
+              height={80}
+            />
             <span className={`text-xl font-bold leading-none ${state === "collapsed" ? "hidden" : ""}`}>
               {workspaceName}
             </span>
@@ -64,7 +57,6 @@ function SidebarHeaderContent({
 
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
   workspaceName?: string
-  workspaceLogoUrl?: string | null
   userName?: string | null
   userEmail?: string | null
   userRole?: string | null
@@ -73,8 +65,7 @@ type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
 }
 
 export function AppSidebar({
-  workspaceName = "Store Management System ",
-  workspaceLogoUrl,
+  workspaceName = "Cyber Retail ",
   userName = "Guest user",
   userEmail = "guest@example.com",
   userRole = null,
@@ -102,7 +93,7 @@ export function AppSidebar({
     user: {
       name: userName ?? "Guest user",
       email: userEmail ?? "guest@example.com",
-      avatar: workspaceLogoUrl ?? "",
+      avatar: "",
     },
     navMain: [
       {
@@ -224,7 +215,7 @@ export function AppSidebar({
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader className="h-auto py-4">
-        <SidebarHeaderContent workspaceName={workspaceName} workspaceLogoUrl={workspaceLogoUrl} />
+        <SidebarHeaderContent workspaceName={workspaceName} />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain.filter((item) => item.show)} />

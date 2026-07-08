@@ -17,7 +17,6 @@ export default function OnboardingPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const [createdBusinessId, setCreatedBusinessId] = useState<string | null>(null);
-  const [logoUploading, setLogoUploading] = useState(false);
   const [signatureUploading, setSignatureUploading] = useState(false);
   const [upiUploading, setUpiUploading] = useState(false);
   const form = useForm<BusinessForm>({
@@ -40,7 +39,6 @@ export default function OnboardingPage() {
         ifsc: "",
         branch: "",
       },
-      logoUrl: "",
       signatureUrl: "",
       upiQrUrl: "",
     },
@@ -227,33 +225,6 @@ export default function OnboardingPage() {
                 className="h-11 rounded-lg border border-zinc-200 bg-white px-3 text-sm dark:border-zinc-800 dark:bg-zinc-950"
                 {...form.register("website")}
               />
-            </div>
-            <div className="grid gap-2">
-              <label className="text-sm font-medium">Company logo</label>
-              <input
-                type="file"
-                accept="image/*"
-                className="block w-full text-sm"
-                onChange={async (event) => {
-                  const file = event.target.files?.[0];
-                  if (!file) return;
-                  const url = await uploadFile(
-                    file,
-                    () => setLogoUploading(true),
-                    () => setLogoUploading(false),
-                    () => setMessage("Logo upload failed")
-                  );
-                  if (url) form.setValue("logoUrl", url);
-                }}
-              />
-              {logoUploading && (
-                <span className="text-xs text-zinc-500">Uploading...</span>
-              )}
-              {form.watch("logoUrl") ? (
-                <span className="text-xs text-zinc-500">
-                  Uploaded
-                </span>
-              ) : null}
             </div>
           </div>
         </section>

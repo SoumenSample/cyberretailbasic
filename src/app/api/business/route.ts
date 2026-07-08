@@ -80,7 +80,6 @@ export async function PATCH(request: Request) {
         invoicePrefix: payload.invoicePrefix,
         gstRegistrationType: payload.gstRegistrationType,
         bankDetails: payload.bankDetails,
-        logoUrl: payload.logoUrl || null,
         signatureUrl: payload.signatureUrl || null,
         upiQrUrl: payload.upiQrUrl || null,
         financialYearStartMonth: payload.financialYearStartMonth,

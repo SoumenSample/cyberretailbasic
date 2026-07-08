@@ -13,7 +13,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const session = await auth();
 
   let workspaceName = "Workspace";
-  let workspaceLogoUrl: string | null = null;
 
   if (session?.user?.businessId) {
     await connectToDatabase();
@@ -21,11 +20,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
       businessId: session.user.businessId,
       isDeleted: false,
     })
-      .select({ name: 1, logoUrl: 1 })
+      .select({ name: 1 })
       .lean();
 
     workspaceName = business?.name ?? "Workspace";
-    workspaceLogoUrl = business?.logoUrl ?? null;
   }
 
   return (
@@ -41,7 +39,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <AppSidebar
         variant="inset"
         workspaceName={workspaceName}
-        workspaceLogoUrl={workspaceLogoUrl}
         userName={session?.user?.name ?? null}
         userEmail={session?.user?.email ?? null}
         userRole={session?.user?.role ?? null}

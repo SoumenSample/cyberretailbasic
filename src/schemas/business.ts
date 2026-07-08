@@ -19,7 +19,6 @@ export const businessOnboardingSchema = z.object({
     ifsc: z.string().min(5),
     branch: z.string().min(2),
   }),
-  logoUrl: z.string().url().optional().or(z.literal("")),
   signatureUrl: z.string().url().optional().or(z.literal("")),
   upiQrUrl: z.string().url().optional().or(z.literal("")),
 });
